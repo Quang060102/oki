@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Menu Bia Vườn Nhà Bi</title>
+  <style>
+    :root{
+      --bg:#0f0f10;
+      --card:#18181b;
+      --soft:#232326;
+      --line:#2d2d31;
+      --text:#f5f5f5;
+      --muted:#a1a1aa;
+      --primary:#ffb400;
+      --danger:#ef4444;
+      --success:#22c55e;
+    }
+
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+      user-select:none;
+    }
+
+    html, body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,sans-serif;
+      overflow-x:hidden;
+      overscroll-behavior-x:none;
+    }
+
+    body{
+      padding-bottom:110px;
+      overscroll-behavior:none;
+    }
+
+    .topbar{
+      background:rgba(15,15,16,.96);
+      border-bottom:1px solid var(--line);
+      padding:12px;
+    }
+
+    .brand{
+      font-size:20px;
+      font-weight:700;
+      color:var(--primary);
+      margin-bottom:10px;
+    }
+
+    .controls{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .item:active{
+      transform:scale(.985);
+      border-color:rgba(255,180,0,.45);
+    }
+
+    .input, .textarea{
+      width:100%;
+      background:var(--card);
+      color:var(--text);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
+      font-size:15px;
+      outline:none;
+    }
+
+    .textarea{
+      resize:vertical;
+      min-height:76px;
+    }
+
+    .tabs-wrap{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      background:rgba(15,15,16,.98);
+      border-bottom:1px solid var(--line);
+    }
+
+    .tabs{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      padding:10px 12px;
+      -webkit-overflow-scrolling:touch;
+      white-space:nowrap;
+      scroll-behavior:smooth;
+    }
+
+    .tabs::-webkit-scrollbar{
+      display:none;
+    }
+
+    .tab-btn{
+      flex:0 0 auto;
+      white-space:nowrap;
+      border:none;
+      background:var(--soft);
+      color:var(--text);
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      transition:all .2s ease;
+    }
+
+    .tab-btn.active{
+      background:var(--primary);
+      color:#111;
+      box-shadow:0 0 0 2px rgba(255,180,0,.15);
+    }
+
+    .content{
+      padding:12px;
+      min-height:60vh;
+      touch-action:pan-y pinch-zoom;
+      overscroll-behavior-x:contain;
+    }
+
+    .section{
+      margin-bottom:20px;
+    }
+
+    .section-title{
+      font-size:18px;
+      font-weight:700;
+      color:var(--primary);
+      margin:10px 0 12px;
+      padding-left:10px;
+      border-left:4px solid var(--primary);
+    }
+
+    .swipe-hint{
+      color:var(--muted);
+      font-size:12px;
+      margin:-2px 0 12px 2px;
+    }
+
+    .list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .item:active{
+      transform:scale(.985);
+      border-color:rgba(255,180,0,.45);
+    }
+
+    .item{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .item:active{
+      transform:scale(.985);
+      border-color:rgba(255,180,0,.45);
+    }
+
+    .item-left{
+      flex:1;
+      min-width:0;
+    }
+
+    .item-name{
+      font-size:16px;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .item-meta{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .price{
+      color:var(--primary);
+      font-weight:700;
+    }
+
+    .item-right{
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:10px;
+      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .item:active{
+      transform:scale(.985);
+      border-color:rgba(255,180,0,.45);
+    }
+
+    .qty{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .qty button{
+      width:34px;
+      height:34px;
+      border:none;
+      border-radius:10px;
+      background:var(--primary);
+      color:#111;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .qty button:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    .count{
+      min-width:24px;
+      text-align:center;
+      font-size:16px;
+      font-weight:700;
+      color:var(--primary);
+    }
+
+    .sold-out{
+      opacity:.45;
+      pointer-events:none;
+    }
+
+    .sold-out-badge{
+      display:inline-block;
+      margin-top:6px;
+      color:#111;
+      background:#f59e0b;
+      border-radius:999px;
+      padding:4px 8px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .cart-bar{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:1200;
+      background:#141416;
+      border-top:2px solid var(--primary);
+      box-shadow:0 -10px 30px rgba(0,0,0,.35);
+      padding:12px;
+      display:none;
+    }
+
+    .cart-bar-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .cart-summary{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:0;
+    }
+
+    .cart-summary strong{
+      color:var(--primary);
+      font-size:16px;
+    }
+
+    .cart-summary span{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .primary-btn{
+      border:none;
+      background:var(--primary);
+      color:#111;
+      border-radius:12px;
+      padding:12px 14px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .primary-btn:disabled{
+      opacity:.6;
+      cursor:not-allowed;
+    }
+
+    .ghost-btn{
+      border:none;
+      background:var(--soft);
+      color:var(--text);
+      border-radius:12px;
+      padding:12px 14px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.6);
+      display:none;
+      z-index:1300;
+      padding:14px;
+      overscroll-behavior:contain;
+    }
+
+    .drawer{
+      position:absolute;
+      left:12px;
+      right:12px;
+      bottom:12px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+      max-height:78vh;
+      overflow:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    .drawer-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .drawer-title{
+      font-size:18px;
+      font-weight:700;
+      color:var(--primary);
+    }
+
+    .icon-btn{
+      border:none;
+      background:transparent;
+      color:var(--text);
+      font-size:24px;
+      cursor:pointer;
+    }
+
+    .cart-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin:12px 0;
+    }
+
+    .cart-item{
+      background:var(--soft);
+      border-radius:14px;
+      padding:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+
+    .item:active{
+      transform:scale(.985);
+      border-color:rgba(255,180,0,.45);
+    }
+
+    .cart-item-name{
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .cart-item-sub{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .empty{
+      color:var(--muted);
+      text-align:center;
+      padding:20px 10px;
+    }
+
+    .totals{
+      border-top:1px solid var(--line);
+      padding-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .total-row{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:15px;
+    }
+
+    .total-row strong{
+      color:var(--primary);
+      font-size:18px;
+    }
+
+    .actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .status{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      min-height:18px;
+    }
+
+    .status.ok{color:var(--success)}
+    .status.err{color:var(--danger)}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">Menu Bia Vườn Nhà </div>
+
+    <div class="controls">
+      <input
+  id="tableName"
+  type="search"
+  list="tableSuggestions"
+  class="input"
+  placeholder="Nhập tên bàn"
+  autocomplete="off"
+/>
+
+      <datalist id="tableSuggestions">
+        <option value="đào tiên giữa">
+        <option value="đào tiên trong">
+        <option value="đào tiên ngoài">
+        <option value="lộc vừng giữa">
+        <option value="lộc vừng trái">
+        <option value="lộc vừng phải">
+        
+      </datalist>
+
+    </div>
+  </div>
+
+  <div class="tabs-wrap">
+    <div id="tabs" class="tabs"></div>
+  </div>
+
+  <div id="content" class="content"></div>
+
+  <div id="cartBar" class="cart-bar">
+    <div class="cart-bar-inner">
+      <div class="cart-summary">
+        <strong id="cartCountText">0 món</strong>
+        <span id="cartTotalText">Tạm tính: 0đ</span>
+      </div>
+      <button class="primary-btn" id="openCartBtn">Xem giỏ hàng</button>
+    </div>
+  </div>
+
+  <div id="cartOverlay" class="overlay">
+    <div class="drawer">
+      <div class="drawer-head">
+        <div class="drawer-title">Giỏ hàng</div>
+        <button class="icon-btn" id="closeCartBtn">×</button>
+      </div>
+
+      <div id="cartList" class="cart-list"></div>
+
+      <div style="margin:12px 0 10px;">
+        <textarea id="cartNote" class="textarea" rows="2" placeholder="Ghi chú đơn, ví dụ: ít cay, lên sau..."></textarea>
+      </div>
+
+      <div class="totals">
+        <div class="total-row">
+          <span>Tổng số phần</span>
+          <span id="drawerQty">0</span>
+        </div>
+        <div class="total-row">
+          <span>Tạm tính</span>
+          <strong id="drawerTotal">0đ</strong>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="ghost-btn" id="clearCartBtn">Xóa giỏ hàng</button>
+        <button class="primary-btn" id="sendOrderBtn">Gửi nhà bếp</button>
+      </div>
+
+      <div id="sendStatus" class="status"></div>
+    </div>
+  </div>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx0ZG7MIqfz7K8na8g-93CUXx0zEOjtNN-6yFqc6abMF9OSd2u58fJXtGKjWRl27anWVQ/exec";
+
+    const MENU = [
+      {
+        id: "khai_vi",
+        name: "Khai vị",
+        items: [
+          { id: "dau_ran", name: "Đậu rán", price: 30000, available: true },
+          { id: "dau_tam_hanh", name: "Đậu tẩm hành", price: 40000, available: true },
+          { id: "nem_chua", name: "Nem chua", price: 40000, available: true },
+          { id: "nem_ngua", name: "Nem ngựa", price: 80000, available: true },
+          { id: "gio_bo", name: "Giò bò", price: 60000, available: true },
+          { id: "ngo_chien", name: "Ngô chiên", price: 40000, available: true },
+          { id: "ca_chi_vang", name: "Cá chỉ vàng", price: 80000, available: true },
+          { id: "ca_mai_chao", name: "Cá mai chao", price: 110000, available: true },
+          { id: "muc_kho_nuong", name: "Mực khô nướng", price: 150000, available: true },
+          { id: "muop_dang_ruoc", name: "Mướp đắng ruốc", price: 60000, available: true },
+          { id: "top_mo_dua_chua", name: "Tóp mỡ dưa chua", price: 100000, available: true },
+          { id: "hen_xuc_phong_tom", name: "Hến xúc phồng tôm", price: 100000, available: true },
+          { id: "bo_xuc_phong_tom", name: "Bò xúc phồng tôm", price: 130000, available: true },
+          { id: "nom_tai_heo", name: "Nộm tai heo", price: 100000, available: true },
+          { id: "nom_bo", name: "Nộm bò", price: 130000, available: true },
+          { id: "nom_sua", name: "Nộm sứa", price: 100000, available: true },
+          { id: "trung_ran_la_ngai", name: "Trứng rán lá ngải", price: 60000, available: true },
+          { id: "luoi_lon_tran", name: "Lưỡi lợn trần", price: 130000, available: true },
+          { id: "quai_lac_tran", name: "Quai lạc trần", price: 130000, available: true }
+        ]
+      },
+      {
+        id: "nuong",
+        name: "Nướng",
+        items: [
+          { id: "ga_nuong_ca_con", name: "Gà nướng cả con", price: 300000, available: true },
+          { id: "tom_nuong", name: "Tôm nướng", price: 150000, available: true },
+          { id: "hau_nuong", name: "Hàu nướng", price: 100000, available: true },
+          { id: "ca_nuong", name: "Cá nướng", price: 200000, available: true },
+          { id: "ba_chi_nuong", name: "Ba chỉ nướng", price: 130000, available: true },
+          { id: "doi_sun_nuong", name: "Dồi sụn nướng", price: 130000, available: true },
+          { id: "long_nuong", name: "Lòng nướng", price: 80000, available: true },
+          { id: "cat_nuong", name: "Cật nướng", price: 100000, available: true },
+          { id: "thap_cam_nuong", name: "Thập cẩm nướng", price: 150000, available: true }
+        ]
+      },
+      {
+        id: "mon_xao",
+        name: "Xào",
+        items: [
+          { id: "rau_xao", name: "Rau xào", price: 40000, available: true },
+          { id: "ech_xao_mang", name: "Ếch xào măng", price: 120000, available: true },
+          { id: "ngua_xao_rau", name: "Ngựa xào rau", price: 130000, available: true },
+          { id: "bap_bo_xao_rau", name: "Bắp bò xào rau", price: 130000, available: true },
+          { id: "cho_xao_lan", name: "Chó xào lăn", price: 130000, available: true },
+          { id: "xach_xao", name: "Xách xào", price: 150000, available: true },
+          { id: "long_xao_dua", name: "Lòng xào dưa", price: 80000, available: true },
+          { id: "quai_lac_xao_rau", name: "Quai lạc xào rau", price: 150000, available: true },
+          { id: "muop_dang_xao_trung", name: "Mướp đắng xào trứng", price: 60000, available: true },
+          { id: "muc_xao", name: "Mực xào", price: 200000, available: true },
+          { id: "muc_nau_chua", name: "Mực nấu chua", price: 200000, available: true },
+          { id: "muc_hap", name: "Mực hấp", price: 200000, available: true }
+        ]
+      },
+      {
+        id: "mon_chien",
+        name: "Chiên",
+        items: [
+          { id: "ech_rang_muoi", name: "Ếch rang muối", price: 120000, available: true },
+          { id: "ga_rang_muoi", name: "Gà rang muối", price: 150000, available: true },
+          { id: "ga_chien_mam", name: "Gà chiên mắm", price: 150000, available: true },
+          { id: "vit_rang_rieng", name: "Vịt rang riềng", price: 130000, available: true },
+          { id: "chan_ga_chien_mam", name: "Chân gà chiên mắm", price: 100000, available: true },
+          { id: "su_lon_chien_mam", name: "Sú lợn chiên mắm", price: 130000, available: true },
+          { id: "tom_rang_muoi", name: "Tôm rang muối", price: 130000, available: true },
+          { id: "ca_trung_chien_la_lot", name: "Cá trứng chiên lá lốt", price: 130000, available: true },
+          { id: "chau_chau_chien", name: "Châu chấu chiên", price: 120000, available: true },
+          { id: "ca_bong_chien_la_not", name: "Cá bống chiên lá nốt", price: 120000, available: true },
+          { id: "ba_chi_rang_rieng", name: "Ba chỉ rang riềng", price: 130000, available: true },
+          { id: "suon_chao_moc_mat", name: "Sườn chao móc mật", price: 150000, available: true },
+          { id: "quai_lac_chao_moc_mat", name: "Quai lạc chao móc mật", price: 150000, available: true }
+        ]
+      },
+      {
+        id: "mon_lau",
+        name: "Lẩu",
+        items: [
+          { id: "lau_thai_thap_cam", name: "Lẩu thái thập cẩm", price: 500000, available: true },
+          { id: "lau_ech", name: "Lẩu ếch", price: 400000, available: true },
+          { id: "lau_xuong_dau", name: "Lẩu xương đầu", price: 400000, available: true }
+        ]
+      },
+      {
+        id: "com_my",
+        name: "Cơm mỳ",
+        items: [
+          { id: "com_rang_thap_cam", name: "Cơm rang thập cẩm", price: 60000, available: true },
+          { id: "com_rang_dua_bo", name: "Cơm rang dưa bò", price: 80000, available: true },
+          { id: "com_rang_hai_san", name: "Cơm rang hải sản", price: 100000, available: true },
+          { id: "mi_xao", name: "Mì xào", price: 60000, available: true },
+          { id: "canh_chua_ca_ria", name: "Canh chua cá rìa", price: 100000, available: true },
+          { id: "canh_trung", name: "Canh trứng", price: 60000, available: true }
+        ]
+      },
+      {
+        id: "do_uong",
+        name: "Đồ uống",
+        items: [
+          { id: "bia_hoi", name: "Bia hơi", price: 8000, available: true },
+          { id: "bia_lon", name: "Bia lon", price: 13000, available: true },
+          { id: "bia_chai", name: "Bia chai", price: 14000, available: true },
+          { id: "nuoc_ngot", name: "Nước ngọt", price: 15000, available: true },
+          { id: "nuoc_loc", name: "Nước lọc", price: 10000, available: true },
+          { id: "ruou", name: "Rượu", price: 30000, available: true },
+          { id: "thuoc_la", name: "Thuốc lá", price: 20000, available: true }
+        ]
+      }
+    ];
+
+    const LS_CART_KEY = "qr_menu_cart_v6";
+    const LS_TABLE_KEY = "qr_menu_table_v6";
+    const LS_NOTE_KEY = "qr_menu_note_v6";
+
+    let cart = {};
+    let sending = false;
+    let activeCategoryId = MENU[0]?.id || "";
+
+    const money = (n) => new Intl.NumberFormat("vi-VN").format(n) + "đ";
+
+    function buildMenuIndex() {
+      const map = {};
+      MENU.forEach(category => {
+        category.items.forEach(item => {
+          map[item.id] = { ...item, categoryId: category.id, categoryName: category.name };
+        });
+      });
+      return map;
+    }
+
+    const MENU_INDEX = buildMenuIndex();
+
+    function generateOrderId() {
+      return "OD" + Date.now() + Math.floor(Math.random() * 1000);
+    }
+
+    function saveState() {
+      localStorage.setItem(LS_CART_KEY, JSON.stringify(cart));
+      localStorage.setItem(LS_TABLE_KEY, document.getElementById("tableName").value);
+      localStorage.setItem(LS_NOTE_KEY, document.getElementById("cartNote").value);
+    }
+
+    function loadState() {
+      try {
+        cart = JSON.parse(localStorage.getItem(LS_CART_KEY) || "{}");
+      } catch {
+        cart = {};
+      }
+
+      const tableValue = localStorage.getItem(LS_TABLE_KEY);
+      const noteValue = localStorage.getItem(LS_NOTE_KEY);
+
+      if (tableValue) document.getElementById("tableName").value = tableValue;
+      if (noteValue) document.getElementById("cartNote").value = noteValue;
+    }
+
+    function updateActiveTab() {
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === activeCategoryId);
+      });
+
+      const activeBtn = document.querySelector(`.tab-btn[data-tab="${activeCategoryId}"]`);
+      if (activeBtn) {
+        activeBtn.scrollIntoView({
+          behavior: "smooth",
+          inline: "center",
+          block: "nearest"
+        });
+      }
+    }
+
+    function renderTabs() {
+      const tabs = document.getElementById("tabs");
+
+      tabs.innerHTML = MENU.map(category => `
+        <button class="tab-btn ${category.id === activeCategoryId ? "active" : ""}" data-tab="${category.id}">
+          ${category.name}
+        </button>
+      `).join("");
+
+      tabs.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeCategoryId = btn.dataset.tab;
+          updateActiveTab();
+          renderContent();
+        });
+      });
+    }
+
+    function renderContent() {
+      const content = document.getElementById("content");
+      const current = MENU.find(x => x.id === activeCategoryId) || MENU[0];
+
+      content.innerHTML = `
+        <div class="section" id="current-section">
+          <div class="section-title">${current.name}</div>
+          <div class="swipe-hint">Vuốt trái hoặc phải ở vùng món để chuyển mục</div>
+          <div class="list">
+            ${current.items.map(item => {
+              const qty = cart[item.id]?.qty || 0;
+              return `
+                <div class="item ${item.available ? "" : "sold-out"}">
+                  <div class="item-left">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-meta">
+                      <span class="price">${money(item.price)}</span>
+                    </div>
+                    ${item.available ? "" : '<div class="sold-out-badge">Hết món</div>'}
+                  </div>
+                  <div class="item-right">
+                    <div class="qty">
+                      <button ${!item.available ? "disabled" : ""} data-action="minus" data-id="${item.id}">-</button>
+                      <span class="count">${qty}</span>
+                      <button ${!item.available ? "disabled" : ""} data-action="add" data-id="${item.id}">+</button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
+      `;
+
+      enableSwipeContent();
+    }
+
+    function goToTabByIndex(index) {
+      if (index < 0 || index >= MENU.length) return;
+      activeCategoryId = MENU[index].id;
+      updateActiveTab();
+      renderContent();
+    }
+
+    function goNextTab() {
+      const currentIndex = MENU.findIndex(x => x.id === activeCategoryId);
+      if (currentIndex < MENU.length - 1) {
+        goToTabByIndex(currentIndex + 1);
+      }
+    }
+
+    function goPrevTab() {
+      const currentIndex = MENU.findIndex(x => x.id === activeCategoryId);
+      if (currentIndex > 0) {
+        goToTabByIndex(currentIndex - 1);
+      }
+    }
+
+    function enableSwipeContent() {
+      const content = document.getElementById("content");
+      if (!content || content.dataset.swipeBound === "1") return;
+
+      let startX = 0;
+      let startY = 0;
+      let currentX = 0;
+      let currentY = 0;
+      let lockDirection = "";
+      let didSwipe = false;
+      const EDGE_GUARD = 24;
+      const HORIZONTAL_TRIGGER = 70;
+      const VERTICAL_TOLERANCE = 0.85;
+
+      content.addEventListener("touchstart", (e) => {
+        if (!e.touches || !e.touches.length) return;
+        const t = e.touches[0];
+        startX = currentX = t.clientX;
+        startY = currentY = t.clientY;
+        lockDirection = "";
+        didSwipe = false;
+      }, { passive: true });
+
+      content.addEventListener("touchmove", (e) => {
+        if (!e.touches || !e.touches.length) return;
+        const t = e.touches[0];
+        currentX = t.clientX;
+        currentY = t.clientY;
+
+        const diffX = currentX - startX;
+        const diffY = currentY - startY;
+
+        if (!lockDirection) {
+          if (Math.abs(diffX) < 10 && Math.abs(diffY) < 10) return;
+          lockDirection = Math.abs(diffX) > Math.abs(diffY) ? "x" : "y";
+        }
+
+        if (lockDirection === "x" && startX > EDGE_GUARD && startX < (window.innerWidth - EDGE_GUARD)) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      content.addEventListener("touchend", () => {
+        const diffX = currentX - startX;
+        const diffY = currentY - startY;
+
+        const startedFromEdge = startX <= EDGE_GUARD || startX >= (window.innerWidth - EDGE_GUARD);
+        if (startedFromEdge) return;
+        if (lockDirection !== "x") return;
+        if (Math.abs(diffX) < HORIZONTAL_TRIGGER) return;
+        if (Math.abs(diffY) > Math.abs(diffX) * VERTICAL_TOLERANCE) return;
+        if (didSwipe) return;
+
+        didSwipe = true;
+        if (diffX < 0) goNextTab();
+        else goPrevTab();
+      }, { passive: true });
+
+      content.dataset.swipeBound = "1";
+    }
+
+    function addItem(itemId) {
+      const item = MENU_INDEX[itemId];
+      if (!item || !item.available) return;
+
+      if (!cart[itemId]) {
+        cart[itemId] = {
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          qty: 0
+        };
+      }
+
+      cart[itemId].qty += 1;
+      saveState();
+      refreshUI();
+    }
+
+    function minusItem(itemId) {
+      if (!cart[itemId]) return;
+      cart[itemId].qty -= 1;
+      if (cart[itemId].qty <= 0) delete cart[itemId];
+      saveState();
+      refreshUI();
+    }
+function clearCart() {
+  cart = {};
+  document.getElementById("tableName").value = "";
+  document.getElementById("cartNote").value = "";
+  localStorage.removeItem(LS_CART_KEY);
+  localStorage.removeItem(LS_TABLE_KEY);
+  localStorage.removeItem(LS_NOTE_KEY);
+  refreshUI();
+}
+
+    function getCartItems() {
+      return Object.values(cart).filter(i => i.qty > 0);
+    }
+
+    function getTotals() {
+      const items = getCartItems();
+      const totalQty = items.reduce((sum, i) => sum + i.qty, 0);
+      const totalPrice = items.reduce((sum, i) => sum + i.qty * i.price, 0);
+      return { totalQty, totalPrice, items };
+    }
+
+    function renderCartBar() {
+      const bar = document.getElementById("cartBar");
+      const { totalQty, totalPrice } = getTotals();
+      document.getElementById("cartCountText").innerText = `${totalQty} món`;
+      document.getElementById("cartTotalText").innerText = `Tạm tính: ${money(totalPrice)}`;
+      bar.style.display = totalQty > 0 ? "block" : "none";
+    }
+
+    function renderCartDrawer() {
+      const list = document.getElementById("cartList");
+      const { totalQty, totalPrice, items } = getTotals();
+
+      if (items.length === 0) {
+        list.innerHTML = `<div class="empty">Chưa có món nào trong giỏ hàng.</div>`;
+      } else {
+        list.innerHTML = items.map(item => `
+          <div class="cart-item">
+            <div>
+              <div class="cart-item-name">${item.name}</div>
+              <div class="cart-item-sub">${money(item.price)} x ${item.qty}</div>
+            </div>
+            <div class="qty">
+              <button data-action="minus-cart" data-id="${item.id}">-</button>
+              <span class="count">${item.qty}</span>
+              <button data-action="add-cart" data-id="${item.id}">+</button>
+            </div>
+          </div>
+        `).join("");
+
+      }
+
+      document.getElementById("drawerQty").innerText = totalQty;
+      document.getElementById("drawerTotal").innerText = money(totalPrice);
+    }
+
+    function refreshUI() {
+      renderTabs();
+      renderContent();
+      renderCartBar();
+      renderCartDrawer();
+    }
+
+    function openCart() {
+      document.getElementById("cartOverlay").style.display = "block";
+      document.body.style.overflow = "hidden";
+      renderCartDrawer();
+    }
+
+    function closeCart() {
+      document.getElementById("cartOverlay").style.display = "none";
+      document.body.style.overflow = "";
+      setStatus("");
+    }
+
+    function setStatus(text, type = "") {
+      const el = document.getElementById("sendStatus");
+      el.className = "status" + (type ? " " + type : "");
+      el.innerText = text || "";
+    }
+
+    function validateBeforeSend() {
+      const tableName = document.getElementById("tableName").value.trim();
+      const { items } = getTotals();
+
+      if (!tableName) {
+        setStatus("Vui lòng nhập tên bàn trước khi gửi.", "err");
+        return false;
+      }
+
+      if (items.length === 0) {
+        setStatus("Giỏ hàng đang trống.", "err");
+        return false;
+      }
+
+      return true;
+    }
+
+    async function sendOrder() {
+      if (sending) return;
+      if (!validateBeforeSend()) return;
+
+      sending = true;
+      const btn = document.getElementById("sendOrderBtn");
+      btn.disabled = true;
+      btn.innerText = "Đang gửi...";
+
+      const tableName = document.getElementById("tableName").value.trim();
+      const note = document.getElementById("cartNote").value.trim();
+      const { items, totalQty, totalPrice } = getTotals();
+
+      const payload = {
+        order_id: generateOrderId(),
+        table_name: tableName,
+        note,
+        total_qty: totalQty,
+        total_price: totalPrice,
+        created_at: new Date().toISOString(),
+        items: items.map(i => ({
+          item_id: i.id,
+          item_name: i.name,
+          qty: i.qty,
+          unit_price: i.price,
+          line_total: i.qty * i.price
+        }))
+      };
+
+      try {
+        const res = await fetch(WEB_APP_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || data.status !== "success") {
+          throw new Error(data.message || "Gửi đơn thất bại");
+        }
+
+        setStatus(`Đã gửi thành công vào bàn "${data.sheet_name || tableName}".`, "ok");
+
+cart = {};
+document.getElementById("tableName").value = "";
+document.getElementById("cartNote").value = "";
+
+localStorage.removeItem(LS_CART_KEY);
+localStorage.removeItem(LS_TABLE_KEY);
+localStorage.removeItem(LS_NOTE_KEY);
+
+refreshUI();
+
+setTimeout(() => {
+  closeCart();
+}, 1000);
+
+      } catch (err) {
+        setStatus(err.message || "Lỗi mạng, chưa gửi được đơn.", "err");
+      } finally {
+        sending = false;
+        btn.disabled = false;
+        btn.innerText = "Gửi nhà bếp";
+      }
+    }
+
+    function bindEvents() {
+      document.getElementById("openCartBtn").addEventListener("click", openCart);
+      document.getElementById("closeCartBtn").addEventListener("click", closeCart);
+      document.getElementById("cartOverlay").addEventListener("click", (e) => {
+        if (e.target.id === "cartOverlay") closeCart();
+      });
+      document.getElementById("clearCartBtn").addEventListener("click", clearCart);
+      document.getElementById("sendOrderBtn").addEventListener("click", sendOrder);
+
+      document.getElementById("tableName").addEventListener("input", saveState);
+      document.getElementById("cartNote").addEventListener("input", saveState);
+
+      document.getElementById("content").addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-action][data-id]");
+        if (!btn) return;
+
+        const { action, id } = btn.dataset;
+        if (action === "add") addItem(id);
+        if (action === "minus") minusItem(id);
+      });
+
+      document.getElementById("cartList").addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-action][data-id]");
+        if (!btn) return;
+
+        const { action, id } = btn.dataset;
+        if (action === "add-cart") addItem(id);
+        if (action === "minus-cart") minusItem(id);
+      });
+    }
+
+    function init() {
+      loadState();
+      bindEvents();
+      refreshUI();
+    }
+
+    init();
+  </script>
+</body>
+</html>
